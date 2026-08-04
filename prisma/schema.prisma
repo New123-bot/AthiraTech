@@ -1,0 +1,73 @@
+// Athira Technology - Prisma Database Schema for MySQL
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String?
+  role      String   @default("viewer") // admin, editor, viewer, developer
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String   @db.Text
+  excerpt   String?  @db.Text
+  category  String   @default("ENGINEERING")
+  imageUrl  String?
+  authorId  Int      @default(1)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Agent {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String   @db.Text
+  category    String   @default("General")
+  iconUrl     String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Service {
+  id          Int     @id @default(autoincrement())
+  title       String
+  slug        String  @unique
+  description String  @db.Text
+  price       String? // e.g. "$499/mo"
+  features    Json
+  order       Int     @default(0)
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  company   String?
+  subject   String   @default("General Inquiry")
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model AnalyticsEvent {
+  id        Int      @id @default(autoincrement())
+  page      String
+  referrer  String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
